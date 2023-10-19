@@ -11,10 +11,12 @@
     <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
-  <link name="imu_link"> </link>
+  <!-- <link name="imu_link"> </link> -->
+  <link name="imu"> </link>
   <joint name="imu_joint" type="fixed">
     <parent link="chassis_link" />
-    <child link="imu_link" />
+    <!-- <child link="imu_link" /> -->
+    <child link="imu" />
     <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
@@ -25,10 +27,12 @@
     <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
 
-  <link name="navsat_link"> </link>
+  <!-- <link name="navsat_link"> </link> -->
+  <link name="gps"> </link>
   <joint name="navsat_joint" type="fixed">
     <parent link="chassis_link" />
-    <child link="navsat_link" />
+    <!-- <child link="navsat_link" /> -->
+    <child link="gps" />
     <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
 

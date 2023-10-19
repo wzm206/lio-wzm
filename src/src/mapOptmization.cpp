@@ -259,7 +259,7 @@ public:
         subCloud = nh.subscribe<lio_sam::cloud_info>("lio_sam/feature/cloud_info", 1, &mapOptimization::laserCloudInfoHandler, this, ros::TransportHints().tcpNoDelay());
         // 订阅GPS里程计
         subGPS   = nh.subscribe<nav_msgs::Odometry> (gpsTopic, 200, &mapOptimization::gpsHandler, this, ros::TransportHints().tcpNoDelay());
-        subGNSSpose   = nh.subscribe<geometry_msgs::PoseStamped> ("/gnss_pose", 200, &mapOptimization::gnssHandler, this, ros::TransportHints().tcpNoDelay());
+        subGNSSpose   = nh.subscribe<geometry_msgs::PoseStamped> ("ori_gps2xyz", 200, &mapOptimization::gnssHandler, this, ros::TransportHints().tcpNoDelay());
         // 订阅来自外部闭环检测程序提供的闭环数据，本程序没有提供，这里实际没用上
         subLoop  = nh.subscribe<std_msgs::Float64MultiArray>("lio_loop/loop_closure_detection", 1, &mapOptimization::loopInfoHandler, this, ros::TransportHints().tcpNoDelay());
 
@@ -451,14 +451,14 @@ public:
     {
         // gpsQueue.push_back(*gpsMsg);
         // ROS_INFO("have gnsspose now !!!");
-        float x = gnssMsg->pose.position.x + 1.493;
-        float y = gnssMsg->pose.position.y + 0.943;
+        float x = gnssMsg->pose.position.x ;
+        float y = gnssMsg->pose.position.y ;
         float z = gnssMsg->pose.position.z;
-        wzm_gps_x = -y;
-        wzm_gps_y = x;
+        wzm_gps_x = y;
+        wzm_gps_y = -x;
         tf::Quaternion trans;
         tf::Vector3 up(x, y, z); //原始的点
-        trans.setRPY(0,0,M_PI/2); //将roll, pitch,yas赋给四元数后，可以得到转换后的四元数
+        trans.setRPY(0,0,-M_PI/2); //将roll, pitch,yas赋给四元数后，可以得到转换后的四元数
         tf::Vector3 newup = up.rotate(trans.getAxis(), trans.getAngle()); //计算原始点旋转之后的坐标
         tf::Quaternion q(gnssMsg->pose.orientation.x, gnssMsg->pose.orientation.y, gnssMsg->pose.orientation.z, gnssMsg->pose.orientation.w);
         tf::Vector3 v1(0,0,1);
@@ -467,14 +467,16 @@ public:
         static tf::TransformBroadcaster br;
 
         // 根据乌龟当前的位姿，设置相对于世界坐标系的坐标变换
-        tf::Transform transform;
+        tf::Transform transform, transform_test;
         //设置平移变换
         transform.setOrigin( newup );
         //设置旋转变换
         transform.setRotation(q);
-
+        transform_test.setOrigin( up );
+        ROS_INFO("GPS:%f,%f,LIO:%f,%f", wzm_gps_x,wzm_gps_y,  transformTobeMapped[3], transformTobeMapped[4]);
         // 将坐标变换插入TF树并发布坐标变换
         br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "wzm_gps"));
+        // br.sendTransform(tf::StampedTransform(transform_test, ros::Time::now(), "map", "wzm_origin"));
         addGPSFactor();
     }
 

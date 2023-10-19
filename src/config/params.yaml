@@ -122,11 +122,11 @@ navsat:
   zero_altitude: true
   broadcast_utm_transform: false
   broadcast_utm_transform_as_parent_frame: false
-  publish_filtered_gps: false
+  publish_filtered_gps: true
 
 # EKF for Navsat
 ekf_gps:
-  publish_tf: false
+  publish_tf: true
   map_frame: map
   odom_frame: odom
   base_link_frame: base_link

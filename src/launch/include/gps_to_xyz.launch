@@ -1,0 +1,16 @@
+<launch>
+ <arg name="project" default="lio_sam"/>
+  <param name="gps_sub_topic" value = "/fix" />                  // 订阅GPS数据话题名称
+  <param name="output_frame_name" value = "map" />               // 输出frame名称
+  <param name="auto_get_origin_gps" value = "true" />            // 是否自动获取起始点（数据集第一个GPS数据）经纬高度信息
+  <param name="z_rotate_value" value = "0.0" />                  // 对整个轨迹进行旋转操作
+  <param name="origin_longitude_value" value = "40.4074333333" />          // 手动输入起始点经度值
+  <param name="origin_latitude_value" value = "116.674045" />           // 手动输入起始点纬度值
+  <param name="origin_altitude_value" value = "83.29" />           // 手动输入起始点高度值
+  <param name="longitude_resolution" value = "1.172032798318e-05" /> // X轴单位米对应经度变化量
+  <param name="latitude_resolution" value = "9.01006167e-06" />  // Y轴单位米对应纬度变化量
+  <param name="altitude_resolution" value = "1.0" />             // Z轴单位米对应高度变化量
+ 
+  <node pkg="$(arg project)" name="$(arg project)_gps2xyz" type="$(arg project)_gps2xyz" output="screen" />
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find gps2xyz)/rviz/gps_to_xyz.rviz" />
+</launch>

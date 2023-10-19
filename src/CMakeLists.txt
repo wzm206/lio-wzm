@@ -5,6 +5,9 @@ set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS "-std=c++14")
 set(CMAKE_CXX_FLAGS_DEBUG "-O3 -Wall -g -pthread")
 
+# 设置Boost的根目录路径
+set(GTSAM_ROOT "/home/tonywang/code/gtsam-4.0.0/build")
+
 find_package(catkin REQUIRED COMPONENTS
   tf
   roscpp
@@ -145,6 +148,10 @@ target_link_libraries(${PROJECT_NAME}_mapOptmization ${catkin_LIBRARIES} ${PCL_L
 # IMU Preintegration
 add_executable(${PROJECT_NAME}_imuPreintegration src/imuPreintegration.cpp)
 target_link_libraries(${PROJECT_NAME}_imuPreintegration ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES} gtsam ${GLOG_LIBRARIES})
+
+# GNSS2XYZ
+add_executable(${PROJECT_NAME}_gps2xyz src/gps_to_xyz_wzm.cpp)
+target_link_libraries(${PROJECT_NAME}_gps2xyz ${catkin_LIBRARIES} )
 
 # add_executable(${PROJECT_NAME}_pose_estimate src/pose_estimate.cpp src/Mahony_AHRS.cpp src/EKF_AHRS.cpp src/Convert.cpp src/Madgwick_AHRS.cpp)
 # target_link_libraries(${PROJECT_NAME}_pose_estimate
